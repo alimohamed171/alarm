@@ -1,7 +1,10 @@
 package com.example.alarm
 
 import android.app.DatePickerDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.TimePickerDialog
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.alarm.databinding.ActivityMainBinding
@@ -18,6 +21,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         val c = Calendar.getInstance()
 
+
+
+        createNotificationChannel()
+
+
         binding.pickTime.setOnClickListener {
 
             val hour = c.get(Calendar.HOUR_OF_DAY)
@@ -25,7 +33,7 @@ class MainActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,{
                     view,hour,minute ->
-                    binding.textView.text=("$hour : $minute")
+                    binding.textView.text= "$hour : $minute"
                 }, hour , minute , false
             )
             timePickerDialog.show()
@@ -39,10 +47,9 @@ class MainActivity : AppCompatActivity() {
             val DatePickerDialog = DatePickerDialog(
                 this,{
                         view, year, monthOfYear, dayOfMonth ->
-//                    selectedDateTV.text =
-//                        (dayOfMonth.toString() + "-" + (monthOfYear + 1) + "-" + year)
-                    binding.textView2.text=("${dayOfMonth.toString()}-${monthOfYear+1}-" +
-                            "$year")
+
+                    binding.textView2.text="${dayOfMonth}-${monthOfYear+1}-" +
+                            "$year"
 
                 },year,month,day
             )
@@ -58,6 +65,18 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
+    private fun createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val name = "ak channel"
+            val description = "Channel for Alarm Manager"
+            val imp = NotificationManager.IMPORTANCE_HIGH
+            val channel : NotificationChannel = NotificationChannel("Alarm",name,imp)
+            channel.description = description
+            val notificationManager : NotificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
 
 
 
